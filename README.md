@@ -1,11 +1,11 @@
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d47a1,100:001529&height=250&section=header&text=Horizon-Intel&fontSize=70&fontColor=fff&animation=fadeIn&fontAlignY=38&desc=Enterprise%20Open-Source%20Intelligence%20Platform&descAlignY=55&descAlign=50" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d47a1,100:001529&height=250&section=header&text=Horizon-Intel&fontSize=70&fontColor=fff&animation=fadeIn&fontAlignY=38&desc=Open-Source%20Intelligence%20%26%20Attack%20Surface%20Reconnaissance&descAlignY=55&descAlign=50" width="100%" />
 </div>
 
 <p align="center">
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&duration=3500&pause=500&color=3B82F6&center=true&vCenter=true&width=600&lines=Automated+Data+Collection+from+Public+Sources;Advanced+Visualization+%26+Correlation+Engine;Real-time+Threat+Intelligence+Platform;OSINT+%7C+Reconnaissance+%7C+Analysis" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&duration=3500&pause=500&color=3B82F6&center=true&vCenter=true&width=600&lines=Automated+Reconnaissance+from+Public+Sources;DNS+Enumeration+%26+Subdomain+Discovery;Web+%26+Certificate+Intelligence;GitHub+%26+Google+Dorking+Engine;NVD+%2F+CVE+Vulnerability+Lookup;OSINT+%7C+Reconnaissance+%7C+Analysis" alt="Typing SVG" />
   </a>
 </p>
 
@@ -29,9 +29,10 @@
 - [Overview](#-overview)
 - [Architecture](#-architecture)
 - [Features](#-features)
-- [Supported Data Sources](#-supported-data-sources)
+- [Modules](#-modules)
 - [Quick Start](#-quick-start)
 - [Usage Examples](#-usage-examples)
+- [Web Dashboard](#-web-dashboard)
 - [Configuration](#-configuration)
 - [Roadmap](#-roadmap)
 - [Contributing](#-contributing)
@@ -41,16 +42,25 @@
 
 ## 🌐 Overview
 
-**Horizon-Intel** is an enterprise-grade **Open-Source Intelligence (OSINT)** platform designed for automated data collection, correlation, and analysis from publicly available sources. Built with Python and modern data visualization technologies, it empowers security professionals, threat analysts, and researchers to gather actionable intelligence efficiently.
+**Horizon-Intel** is a modular **Open-Source Intelligence (OSINT)** and **Attack Surface Reconnaissance** platform. It automates data collection from public sources — DNS records, certificate transparency logs, web archives, WHOIS, GitHub code search, Google dorking, and NVD/CVE databases — and correlates findings into actionable intelligence.
+
+Built from the ground up as a comprehensive recon toolkit, it serves penetration testers, bug bounty hunters, SOC analysts, and security researchers.
 
 ### Why Horizon-Intel?
 
 | Capability | Description |
 |------------|-------------|
-| 🔍 **Automated Collection** | Multi-threaded collectors for 20+ public sources |
-| 🧠 **Correlation Engine** | Cross-references data points to uncover hidden relationships |
-| 📊 **Advanced Visualization** | Interactive dashboards with real-time updates |
-| 📝 **Reporting** | Auto-generates professional PDF/HTML intelligence reports |
+| 🔍 **DNS Reconnaissance** | Subdomain enumeration, permutation, zone walking, takeover detection |
+| 🔐 **Certificate Intelligence** | Certificate transparency log scanning via crt.sh |
+| 🌐 **Web History** | Wayback Machine URL enumeration and content discovery |
+| 🖧 **Network Scanning** | Port scanning via python-nmap |
+| 🕵️ **OSINT Dorking** | GitHub code search + Google dorking automation |
+| 📋 **Vulnerability Lookup** | CVE/NVD database queries via nvdlib |
+| 🧠 **Correlation Engine** | Cross-references findings across all modules |
+| 📊 **Graph Analysis** | Entity relationship mapping and attack surface visualization |
+| 🤖 **AI Integration** | Local LLM analysis via Ollama |
+| 📝 **Reporting** | Markdown and PDF report generation with MITRE ATT&CK mapping |
+| 🌐 **Web Dashboard** | Flask-based interactive dashboard with D3.js visualization |
 
 ---
 
@@ -61,7 +71,7 @@ graph LR
     A[Public Sources] --> B[Data Collectors]
     B --> C[Normalization Layer]
     C --> D[Correlation Engine]
-    D --> E[(Database)]
+    D --> E[(In-Memory / SQLite Cache)]
     E --> F[Visualization Layer]
     F --> G[Reports]
 
@@ -79,17 +89,21 @@ graph LR
 ```mermaid
 flowchart TD
     subgraph Sources["🌐 Public Sources"]
-        S1[Social Media]
-        S2[DNS / WHOIS]
-        S3[Search Engines]
-        S4[Dark Web]
-        S5[Shodan / Censys]
+        S1[DNS / WHOIS]
+        S2[Certificate Logs]
+        S3[Wayback Machine]
+        S4[GitHub Search]
+        S5[Google Search]
+        S6[NVD / CVE]
     end
 
     subgraph Collectors["📡 Collectors"]
-        C1[API Wrappers]
-        C2[Web Scrapers]
-        C3[Crawlers]
+        C1[DNS Scanner]
+        C2[Cert Scanner]
+        C3[Wayback Scanner]
+        C4[GitHub Dorker]
+        C5[Google Dorker]
+        C6[NVD Lookup]
     end
 
     subgraph Processing["⚙️ Processing"]
@@ -99,22 +113,22 @@ flowchart TD
     end
 
     subgraph Storage["💾 Storage"]
-        DB[(PostgreSQL)]
-        ES[(Elasticsearch)]
-        FS[(File System)]
+        DB[(In-Memory)]
+        CA[(SQLite Cache)]
     end
 
     subgraph Analysis["📊 Analysis"]
         A1[Correlation Engine]
         A2[Graph Analysis]
         A3[Timeline Builder]
+        A4[LLM Analysis]
     end
 
     subgraph Output["📤 Output"]
         O1[Dashboard]
-        O2[Reports]
-        O3[Alerts]
-        O4[APIs]
+        O2[Markdown Reports]
+        O3[PDF Reports]
+        O4[MITRE Mapping]
     end
 
     Sources --> Collectors
@@ -128,54 +142,65 @@ flowchart TD
 
 ## ✨ Features
 
-### 🔬 Intelligence Collection
-- Multi-source data aggregation (social media, DNS, WHOIS, search engines, dark web)
-- Scheduled and on-demand collection with configurable intervals
-- Proxy and Tor support for anonymous scraping
-- Rate limiting and polite crawling policies
+### 🔬 Reconnaissance Modules
+- **DNS Enumeration**: A, AAAA, MX, NS, TXT, CNAME, SOA records; subdomain brute-force; certificate transparency (crt.sh); subdomain permutation with takeover detection
+- **Web Intelligence**: Wayback Machine URL history, JavaScript endpoint discovery, technology fingerprinting
+- **Certificate Analysis**: SSL certificate transparency log scanning
+- **Network Scanning**: Port and service discovery via `python-nmap`
+- **WHOIS Lookups**: Domain registration and ownership data
 
-### 🧩 Correlation Engine
-- Entity extraction and relationship mapping
-- Cross-reference data across sources
-- Automated pattern recognition and anomaly detection
-- Graph-based relationship visualization
+### 🕵️ OSINT Dorking
+- **GitHub Dorking**: Automated code search for API keys, credentials, AWS secrets, private keys, database connection strings, config files
+- **Google Dorking**: Automated search for login pages, admin panels, sensitive files, config files, backup files
 
-### 📈 Visualization & Reporting
-- Real-time interactive dashboards (Grafana / Plotly)
-- Timeline analysis and geo-mapping
-- Export to PDF, HTML, CSV, JSON
-- Custom report templates
+### 📋 Vulnerability Intelligence
+- **NVD/CVE Lookup**: Query the National Vulnerability Database for known vulnerabilities affecting discovered services
 
-### 🔒 Security & Compliance
-- Encrypted storage for sensitive data
-- Audit logging for all operations
-- Role-based access control (RBAC)
-- GDPR-compliant data handling
+### 🧠 AI Integration
+- **Ollama Engine**: Local LLM analysis of reconnaissance results for additional insights (fully offline, no cloud dependency)
+
+### 🔗 Correlation & Analysis
+- **Asset Correlator**: Cross-references DNS, certificate, network, and web data to build a unified asset inventory
+- **Graph Builder**: Entity relationship graph with interactive HTML visualization (powered by vis-network)
+- **Scan Diff Engine**: Compare results between targets and generate bounty-style reports
+- **MITRE ATT&CK Mapping**: Maps findings to the MITRE ATT&CK framework
+
+### 📝 Reporting
+- **Markdown Reporter**: Human-readable Markdown reports with sections per module
+- **PDF Reporter**: Professional PDF reports via ReportLab
+- **Bounty Reporter**: Bug-bounty-style formatted reports
+- **Neo4j Export**: Export relationship graph to Cypher queries
+
+### 🌐 Web Dashboard
+- Flask + D3.js interactive dashboard
+- REST API for scan results
+- Subdomain, port, graph, and MITRE visualization
 
 ---
 
-## 📡 Supported Data Sources
+## 🧩 Modules
 
-| Category | Source | Type | Status |
-|----------|--------|------|--------|
-| 🌐 **Search** | Google Dorks | Search Engine | ✅ |
-| 🌐 **Search** | Bing | Search Engine | ✅ |
-| 🌐 **Search** | DuckDuckGo | Search Engine | ✅ |
-| 🌐 **Search** | Shodan | IoT Search | ✅ |
-| 🌐 **Search** | Censys | Attack Surface | ✅ |
-| 📍 **DNS** | PassiveTotal | DNS / WHOIS | ✅ |
-| 📍 **DNS** | SecurityTrails | DNS History | ✅ |
-| 📍 **DNS** | VirusTotal | Domain / IP | ✅ |
-| 📍 **DNS** | Sublist3r | Subdomain | ✅ |
-| 📍 **DNS** | Amass | Subdomain | ✅ |
-| 💬 **Social** | Twitter / X | Social Media | ✅ |
-| 💬 **Social** | Reddit | Social Media | ✅ |
-| 💬 **Social** | Telegram | Messaging | ✅ |
-| 🌑 **Dark Web** | Ahmia | Tor Search | ✅ |
-| 🌑 **Dark Web** | OnionScan | Dark Web | ⏳ |
-| 🔧 **Technical** | GitHub | Code Search | ✅ |
-| 🔧 **Technical** | Have I Been Pwned | Breach Data | ✅ |
-| 🔧 **Technical** | Dehashed | Credential Leaks | ✅ |
+| Module | File | Description |
+|--------|------|-------------|
+| **DNS Scanner** | `modules/dns/dns_scanner.py` | DNS record enumeration, subdomain discovery |
+| **Advanced DNS** | `modules/dns/advanced_dns.py` | Zone walking, DNSSEC, AXFR attempts |
+| **Subdomain Permutator** | `modules/dns/subdomain_permutator.py` | Subdomain permutation + takeover detection |
+| **Cert Scanner** | `modules/certs/cert_scanner.py` | Certificate transparency (crt.sh) scanning |
+| **Web Scanner** | `modules/web/web_scanner.py` | Technology fingerprinting, endpoint discovery |
+| **Wayback Scanner** | `modules/web/wayback.py` | Wayback Machine URL history |
+| **Network Scanner** | `modules/network/scanner.py` | Port scanning via python-nmap |
+| **WHOIS Scanner** | `modules/osint/whois.py` | Domain WHOIS lookups |
+| **GitHub Dorker** | `modules/osint/github.py` | GitHub code search dorking |
+| **Google Dorker** | `modules/osint/google.py` | Google search dorking |
+| **Cloud/Email** | `modules/osint/cloud_email.py` | Cloud bucket detection, email enumeration, CDN detection |
+| **CVE Scanner** | `modules/cve/nvd.py` | NVD vulnerability database queries |
+| **AI Engine** | `ai/llm_engine.py` | Ollama local LLM analysis |
+| **Correlation** | `core/correlator.py` | Cross-module asset correlation |
+| **Graph Builder** | `graph/builder.py` | Relationship graph with vis-network |
+| **Scan Diff** | `core/scan_diff.py` | Target comparison and diff reports |
+| **MITRE Mapper** | `reporting/mitre_mapper.py` | MITRE ATT&CK framework mapping |
+| **Monitor** | `core/monitor.py` | Subdomain monitoring and alerting |
+| **Plugins** | `core/plugins.py` | Plugin loading system |
 
 ---
 
@@ -187,8 +212,8 @@ flowchart TD
 # Python 3.10+
 python --version  # > 3.10.x
 
-# PostgreSQL (optional, for production)
-psql --version
+# Optional but recommended: nmap for network scanning
+nmap --version
 ```
 
 ### Installation
@@ -204,130 +229,207 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Initialize configuration
-cp config.example.yml config.yml
-nano config.yml  # Edit your API keys and settings
-
-# Initialize database (optional)
-python manage.py db init
 ```
 
 ### Run
 
 ```bash
-# Start the platform
-python horizon.py
+# Basic reconnaissance on a domain
+python osint_eye.py example.com
+
+# Full scan with AI analysis
+python osint_eye.py example.com --depth full --rich
+
+# Scan multiple targets
+python osint_eye.py example.com test.com --stealth
+
+# Launch the web dashboard
+python osint_eye.py example.com --dashboard
+
+# Generate a PDF report
+python osint_eye.py example.com --pdf
 
 # Or with Docker
-docker-compose up -d
-```
-
-### Verify Installation
-
-```bash
-# Run a basic reconnaissance
-python horizon.py --domain example.com --quick
-
-# Check dashboard
-open http://localhost:8080
+docker build -t horizon-intel .
+docker run --rm horizon-intel example.com
 ```
 
 ---
 
 ## 💻 Usage Examples
 
-### Domain Intelligence Gathering
-
-```python
-from horizon import HorizonIntel
-
-client = HorizonIntel(api_key="your_key")
-
-# Enumerate a domain
-results = client.enumerate(
-    domain="example.com",
-    sources=["shodan", "virustotal", "securitytrails"],
-    depth="full"
-)
-
-print(results.summary())
-```
-
-### CLI Quick Scan
+### Basic Domain Reconnaissance
 
 ```bash
-# Quick domain reconnaissance
-python horizon.py --domain example.com --sources shodan,vt --output json
+# Quick scan with default modules
+python osint_eye.py example.com
 
-# Full intelligence profile
-python horizon.py --domain example.com --full --report pdf
+# Stealth mode (slower, lower footprint)
+python osint_eye.py example.com --stealth
 
-# Monitor a domain for changes
-python horizon.py --domain example.com --monitor --interval 1h
+# In-depth scan with AI module
+python osint_eye.py example.com --depth full --rich
 ```
 
-### API Usage
+### View Available Modules
 
 ```bash
-# REST API endpoint
-curl -X POST http://localhost:8080/api/v1/enumerate \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"domain": "example.com", "sources": ["shodan", "virustotal"]}'
+python osint_eye.py --modules
 ```
 
-### Generate Report
+### Compare Two Targets
 
 ```bash
-# Generate HTML report
-python horizon.py --domain example.com --report html --output ./reports/
+python osint_eye.py example.com evil.example.com --diff
+```
 
-# Generate PDF report
-python horizon.py --domain example.com --report pdf --output ./reports/
+### Continuous Monitoring
+
+```bash
+# Monitor subdomains of a domain
+python osint_eye.py example.com --monitor --monitor-interval 3600
+```
+
+### Web Dashboard
+
+```bash
+# Scan and launch dashboard
+python osint_eye.py example.com --dashboard
+
+# Then visit: http://localhost:5000
+```
+
+### Generate Reports
+
+```bash
+# Markdown report
+python osint_eye.py example.com -o report.md
+
+# PDF report
+python osint_eye.py example.com --pdf
+
+# Export full results as JSON
+python osint_eye.py example.com -o results.json
+```
+
+### Export to Neo4j
+
+```bash
+python osint_eye.py example.com --export-cypher results.cypher
+```
+
+### AI-Powered Analysis (requires Ollama)
+
+```bash
+# Install Ollama: https://ollama.ai
+ollama pull llama3.2
+
+# Run with AI analysis
+python osint_eye.py example.com --agent
+
+# Disable AI if desired
+python osint_eye.py example.com --no-ai
+```
+
+### Webhook Alerts
+
+```bash
+python osint_eye.py example.com --monitor --webhook https://hooks.slack.com/services/xxx
+```
+
+---
+
+## 🌐 Web Dashboard
+
+Horizon-Intel includes a Flask + D3.js-based web dashboard for interactive visualization of scan results.
+
+```bash
+# Method 1: Scan and launch dashboard together
+python osint_eye.py example.com --dashboard
+
+# Method 2: Load existing results into dashboard
+python ui/dashboard.py results.json
+```
+
+Then open **http://localhost:5000** in your browser.
+
+The dashboard provides:
+- Scan summary with statistics
+- Subdomain list with source attribution
+- Open ports and services table
+- Interactive relationship graph
+- MITRE ATT&CK mapping visualization
+
+### REST API Endpoints
+
+Once the dashboard is running, you can query results programmatically:
+
+```bash
+# List all scans
+curl http://localhost:5000/api/scans
+
+# Get scan details
+curl http://localhost:5000/api/scan/example.com
+
+# Get discovered subdomains
+curl http://localhost:5000/api/scan/example.com/subdomains
+
+# Get open ports
+curl http://localhost:5000/api/scan/example.com/ports
+
+# Get relationship graph
+curl http://localhost:5000/api/scan/example.com/graph
+
+# Get MITRE ATT&CK mapping
+curl http://localhost:5000/api/scan/example.com/mitre
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-Horizon-Intel uses a YAML configuration file for all settings:
+Horizon-Intel is configured via CLI flags and a setup wizard. Run the wizard to customize your scan profile:
 
-```yaml
-# config.yml
-app:
-  name: "Horizon-Intel"
-  version: "2.0.0"
-  debug: false
-
-collectors:
-  shodan:
-    api_key: "YOUR_SHODAN_KEY"
-    rate_limit: 1  # requests per second
-  virustotal:
-    api_key: "YOUR_VT_KEY"
-
-database:
-  host: localhost
-  port: 5432
-  name: horizon_intel
-
-reports:
-  format: [pdf, html, json]
-  template: "professional"
+```bash
+python osint_eye.py --wizard
 ```
+
+### Key CLI Options
+
+| Flag | Description |
+|------|-------------|
+| `targets` | Target domain(s) or IP(s) (positional argument) |
+| `--stealth` | Enable stealth mode (lower request rate) |
+| `--no-ai` | Disable AI analysis module |
+| `--no-cache` | Disable SQLite result caching |
+| `--output -o` | Output file path (JSON/MD auto-detected) |
+| `--depth` | Scan depth (`quick`, `normal`, `full`) |
+| `--diff` | Show comparison between multiple targets |
+| `--rich` | Use Rich TUI output format |
+| `--dashboard` | Launch web dashboard after scan |
+| `--monitor` | Enable continuous monitoring mode |
+| `--monitor-interval` | Monitoring interval in seconds |
+| `--webhook` | Webhook URL for alerts |
+| `--agent` | Enable AI agent analysis mode |
+| `--export-cypher` | Export graph to Neo4j Cypher file |
+| `--pdf` | Generate PDF report |
+| `--modules` | List all available modules |
 
 ---
 
 ## 🗺 Roadmap
 
-- [x] Core OSINT collectors (v1.0)
-- [x] Correlation engine (v1.5)
-- [x] Web dashboard (v2.0)
-- [ ] Machine learning integration (v2.5)
-- [ ] Real-time alerting system (v2.5)
-- [ ] Mobile companion app (v3.0)
-- [ ] Plugin marketplace (v3.0)
+- [x] Core DNS and web reconnaissance (v1.0)
+- [x] GitHub and Google dorking engines (v1.5)
+- [x] Web dashboard with graph visualization (v2.0)
+- [x] PDF and MITRE ATT&CK reporting (v2.0)
+- [x] Correlation engine and scan diff (v2.0)
+- [x] AI integration via Ollama (v2.0)
+- [ ] Integration with Shodan / Censys APIs
+- [ ] Real-time alerting system with notifications
+- [ ] Historical scan trend analysis
+- [ ] Plugin marketplace
+- [ ] Masscan integration for faster network scanning
 
 ---
 
@@ -350,7 +452,7 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 ---
 
 <p align="center">
-  <b>Horizon-Intel</b> — Enterprise Open-Source Intelligence Platform
+  <b>Horizon-Intel</b> — Open-Source Intelligence & Attack Surface Reconnaissance Platform
   <br>
   <a href="https://github.com/Ruby570bocadito/Horizon-Intel">GitHub</a>
   ·
