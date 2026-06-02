@@ -3,8 +3,8 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![100% Free](https://img.shields.io/badge/100%25%20Free-No%20API%20Keys-brightgreen)]()
-[![Stars](https://img.shields.io/github/stars/Ruby570bocadito/OSINT-EYE)](https://github.com/Ruby570bocadito/OSINT-EYE/stargazers)
-[![Forks](https://img.shields.io/github/forks/Ruby570bocadito/OSINT-EYE)](https://github.com/Ruby570bocadito/OSINT-EYE/network)
+[![Stars](https://img.shields.io/github/stars/Ruby570bocadito/Horizon-Intel)](https://github.com/Ruby570bocadito/Horizon-Intel/stargazers)
+[![Forks](https://img.shields.io/github/forks/Ruby570bocadito/Horizon-Intel)](https://github.com/Ruby570bocadito/Horizon-Intel/network)
 
 **AI-Powered Attack Surface Intelligence Engine**
 
@@ -22,8 +22,8 @@ docker run -v $(pwd)/output:/app/output osint-eye example.com --depth full --out
 
 ### Local
 ```bash
-git clone https://github.com/Ruby570bocadito/OSINT-EYE.git
-cd OSINT-EYE
+git clone https://github.com/Ruby570bocadito/Horizon-Intel.git
+cd Horizon-Intel
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 sudo apt install nmap
